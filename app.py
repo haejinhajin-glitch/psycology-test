@@ -8,10 +8,10 @@ st.set_page_config(page_title="조별과제 잔혹사: 나의 팀플 성향 진�
 # 2. 연보라 & 하늘 & 노랑 베이스의 단정하고 깔끔한 UI 디자인 (CSS)
 st.markdown("""
     <style>
-    /* 구글 폰트에서 얇고 깔끔한 개구(Gaegu)체 불러오기 */
+    /* 구글 폰트에서 얇고 깔끔한 나눔고딕체 불러오기 */
     @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
     
-    /* 전체 서체를 개구체로 깔끔하게 통일 */
+    /* 전체 서체를 나눔고딕체로 깔끔하게 통일 */
     * { 
         font-family: 'Gowun Dodum', sans-serif !important; 
     }
