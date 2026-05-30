@@ -5,175 +5,167 @@ import pandas as pd
 # 1. 페이지 설정 및 반응형 최적화
 st.set_page_config(page_title="조별과제 잔혹사: 나의 팀플 성향 진단", page_icon="📝", layout="centered")
 
-# 2. 다꾸 감성의 파스텔톤 손글씨/일러스트 UI 디자인 (CSS)
+# 2. 연보라 & 하늘 & 노랑 베이스의 단정하고 깔끔한 UI 디자인 (CSS)
 st.markdown("""
     <style>
-    /* 구글 폰트에서 귀여운 감자꽃 손글씨체와 감성적인 함렛체 불러오기 */
-    @import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Hahmlet:wght@300;500;700&display=swap');
+    /* 구글 폰트에서 얇고 깔끔한 고운돋움체(Gowun Dodum) 불러오기 */
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
     
-    /* 기본 본문 폰트 설정 */
+    /* 전체 서체를 고운돋움체로 깔끔하게 통일 */
     * { 
-        font-family: 'Hahmlet', serif; 
+        font-family: 'Gowun Dodum', sans-serif !important; 
     }
     
-    /* 전체 배경: 따뜻하고 부드러운 파스텔 노랑 */
+    /* 전체 배경: 매우 부드럽고 연한 하늘빛 도는 화이트 */
     .stApp {
-        background-color: #FEF9E7;
+        background-color: #F4F7F9;
     }
     
-    /* 메인 카드 박스: 파스텔 하늘색 테두리와 그림자 */
+    /* 메인 카드 박스: 연보라색 얇은 테두리와 정갈한 레이아웃 */
     .card-container {
         background-color: #ffffff;
         padding: 35px;
-        border-radius: 30px;
-        box-shadow: 0px 12px 20px rgba(214, 219, 223, 0.5);
+        border-radius: 20px;
+        box-shadow: 0px 8px 16px rgba(187, 143, 206, 0.15);
         margin-bottom: 25px;
-        border: 3px dashed #AED6F1; /* 파스텔 하늘색 점선 테두리 */
-        position: relative;
+        border: 1px solid #E8DAEF; /* 연보라색 기본 테두리 */
     }
     
-    /* 메인 타이틀: 감자꽃 손글씨체 적용 및 파스텔 주황 포인트 */
+    /* 메인 타이틀: 차분한 딥 연보라 컬러로 세련되게 변경 */
     .main-title {
-        font-family: 'Gamja Flower', cursive;
-        font-size: 3.2rem;
-        font-weight: 700;
+        font-size: 2.1rem;
+        font-weight: bold;
         text-align: center;
-        color: #E67E22; /* 파스텔 주황 */
-        line-height: 1.2;
-        margin-bottom: 15px;
-        text-shadow: 2px 2px 0px #FADBD8;
+        color: #6C3483; /* 딥 연보라 */
+        line-height: 1.4;
+        margin-bottom: 12px;
     }
     
     .sub-title {
-        font-size: 1.3rem;
+        font-size: 1.15rem;
         text-align: center;
-        color: #7F8C8D;
-        margin-bottom: 40px;
+        color: #7FB3D5; /* 부드러운 하늘색 */
+        margin-bottom: 35px;
         font-weight: 500;
         line-height: 1.5;
     }
     
-    /* 질문 카드 위 배지 */
+    /* 질문 카드 위 배지: 은은한 파스텔 노랑 */
     .q-badge {
-        background-color: #FCF3CF; /* 파스텔 노랑 */
-        color: #BA4A00;
-        padding: 8px 20px;
-        border-radius: 15px;
-        font-weight: 700;
-        font-size: 1.1rem;
+        background-color: #FEF9E7; /* 파스텔 노랑 */
+        color: #7D6608;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 1rem;
         display: inline-block;
-        margin-bottom: 18px;
-        border: 2px solid #F9E79F;
-        transform: rotate(-1deg); /* 스티커처럼 살짝 기울임 */
+        margin-bottom: 15px;
+        border: 1px solid #F9E79F;
     }
     
     .q-text {
-        font-size: 1.5rem;
-        font-weight: 700;
+        font-size: 1.3rem;
+        font-weight: bold;
         color: #2C3E50;
         line-height: 1.6;
         margin-bottom: 20px;
     }
     
-    /* 결과 캐릭터 카드 일러스트 스타일 스타일링 */
+    /* 결과 캐릭터 카드 컨테이너 */
     .type-container {
         background-color: #ffffff;
-        padding: 35px;
-        border-radius: 32px;
-        border: 3px solid #EDBB99; /* 파스텔 주황 브라운 */
-        margin-bottom: 30px;
-        box-shadow: 5px 5px 0px #EDBB99; /* 입체감 주는 그림자 */
+        padding: 30px;
+        border-radius: 20px;
+        border: 1px solid #BB8FCE; /* 파스텔 연보라 테두리 */
+        margin-bottom: 25px;
+        box-shadow: 0px 4px 12px rgba(187, 143, 206, 0.1);
     }
     
-    /* 손그림 일러스트 스티커 느낌의 에바타 효과 */
+    /* 캐릭터 아바타 배경 원형 처리 */
     .character-avatar {
-        font-size: 4rem;
+        font-size: 3rem;
         text-align: center;
         margin: 10px auto;
-        width: 90px;
-        height: 90px;
-        background-color: #EBF5FB; /* 파스텔 하늘 배경 동그라미 */
+        width: 80px;
+        height: 80px;
+        background-color: #EBF5FB; /* 파스텔 하늘색 배경 */
         border-radius: 50%;
-        line-height: 90px;
-        box-shadow: 3px 3px 0px #AED6F1;
-        transform: rotate(5deg);
+        line-height: 80px;
     }
     
     .type-container h4 {
-        font-family: 'Gamja Flower', cursive !important;
-        font-size: 2rem !important;
-        font-weight: 700;
+        font-size: 1.4rem !important;
+        font-weight: bold;
         text-align: center;
-        color: #2E4053;
-        margin-top: 15px;
-        margin-bottom: 20px;
+        color: #5B2C6F; /* 연보라 계열 */
+        margin-top: 12px;
+        margin-bottom: 18px;
     }
     
     .type-container p {
-        font-size: 1.15rem !important;
-        line-height: 1.8;
-        color: #5D6D7E;
-        margin-bottom: 12px;
+        font-size: 1.05rem !important;
+        line-height: 1.7;
+        color: #566573;
+        margin-bottom: 10px;
     }
     
-    /* 스트림릿 기본 마크다운 가독성 업그레이드 */
+    /* 기본 텍스트 크기 가독성 최적화 */
     div[data-testid="stMarkdownContainer"] > p {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
         color: #34495E;
         line-height: 1.7;
     }
     
     h3 {
-        font-family: 'Gamja Flower', cursive !important;
-        font-size: 2.2rem !important;
-        color: #D35400 !important;
+        font-size: 1.6rem !important;
+        color: #6C3483 !important; /* 연보라색 타이틀 */
+        font-weight: bold !important;
     }
     
-    /* 솔루션 메모장 스타일 박스 */
+    /* 솔루션 메모장 스타일 박스: 파스텔 노랑/연보라 융합 */
     .solution-box {
-        background-color: #FDFEFE;
-        padding: 26px;
-        border-radius: 20px;
-        margin-bottom: 20px;
-        border-left: 8px solid #F5B041; /* 파스텔 노랑/주황색 포인트 바 */
-        box-shadow: 0px 5px 15px rgba(0,0,0,0.03);
+        background-color: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        margin-bottom: 18px;
+        border-left: 6px solid #BB8FCE; /* 연보라색 포인트 바 */
+        border-top: 1px solid #F4F6F7;
+        border-right: 1px solid #F4F6F7;
+        border-bottom: 1px solid #F4F6F7;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.02);
     }
     .solution-title {
-        font-family: 'Gamja Flower', cursive;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #D35400;
-        margin-bottom: 8px;
+        font-size: 1.15rem;
+        font-weight: bold;
+        color: #5B2C6F;
+        margin-bottom: 6px;
     }
     .solution-desc {
-        font-size: 1.15rem !important;
+        font-size: 1.05rem !important;
         color: #5D6D7E;
-        line-height: 1.7;
+        line-height: 1.6;
     }
     
-    /* 하단 버튼들: 둥글둥글 귀여운 스타일 */
+    /* 하단 버튼들: 심플하고 단정한 라운드 스타일 */
     .stButton>button {
-        font-family: 'Gamja Flower', cursive !important;
-        border-radius: 30px !important;
-        font-size: 1.5rem !important;
-        padding: 8px 30px !important;
-        background-color: #F5B041 !important; /* 따뜻한 파스텔 주황노랑 */
+        border-radius: 12px !important;
+        font-size: 1.1rem !important;
+        padding: 8px 25px !important;
+        background-color: #BB8FCE !important; /* 차분한 파스텔 연보라 */
         color: white !important;
         border: none !important;
-        box-shadow: 0px 5px 0px #D35400 !important; /* 입체 버튼 효과 */
-        transition: all 0.1s ease;
+        box-shadow: 0px 4px 8px rgba(187, 143, 206, 0.3) !important;
+        transition: all 0.15s ease;
     }
     .stButton>button:hover {
-        background-color: #F4D03F !important;
-        transform: translateY(2px);
-        box-shadow: 0px 3px 0px #D35400 !important;
+        background-color: #A569BD !important; /* 살짝 짙은 연보라 */
+        transform: translateY(-1px);
     }
     
-    /* 라디오 버튼 폰트 크기 조정 */
+    /* 라디오 버튼 선택지 폰트 및 간격 조정 */
     div[data-testid="stRadio"] label {
-        font-size: 1.15rem !important;
+        font-size: 1.05rem !important;
         color: #2C3E50 !important;
-        padding: 5px 0;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -223,27 +215,26 @@ questions = [
     }
 ]
 
-# --- 🏠 화면 0: 첫 인트로 페이지 (다꾸 일러스트 테마) ---
+# --- 🏠 화면 0: 첫 인트로 페이지 ---
 if st.session_state.step == 0:
     st.write("")
-    st.markdown("<div class='main-title'>🎨 조별과제 잔혹사<br>나의 팀플 성향 & 인지 오류 진단</div>", unsafe_allow_html=True)
-    st.markdown("<div class='sub-title'>“과연 나는 팀플에서 얼마나 이성적이고 합리적일까?”<br><span style='font-size:1.1rem; color:#D35400; font-weight:bold;'>잠수 빌런, 단톡방 안읽씹 상황으로 알아보는 다이어리형 심리 리포트</span></div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-title'>👥 조별과제 잔혹사<br>나의 팀플 성향 & 인지 오류 진단</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sub-title'>“과연 나는 팀플에서 얼마나 이성적이고 합리적일까?”<br><span style='font-size:1rem; color:#85929E;'>현실적인 팀플 돌발 상황들로 정밀하게 파악해보는 나의 인지 편향 지수</span></div>", unsafe_allow_html=True)
     
     st.markdown("""
-    <div class='card-container' style='text-align: center; background-color: #FDFEFE;'>
-        <div style='font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(3px 3px 0px #FADBD8);'>🎨 📋 🦦 🎒</div>
-        <p style='line-height: 2.0; color: #34495E; font-size: 1.25rem; margin: 0;'>
-        <b>대학 생활의 최대 고비, 이름만 들어도 아찔한 '조.별.과.제'!</b> 🤦‍♂️<br><br>
+    <div class='card-container'>
+        <p style='line-height: 1.8; color: #2C3E50; font-size: 1.1rem; text-align: center; margin: 0;'>
+        <b>대학 생활의 최대 고비, 이름만 들어도 아찔한 '조별과제'</b><br><br>
         우리는 늘 팀플에서 이성적으로 판단하고 최선의 선택을 내린다고 믿지만,<br>
         사실 조원 빌런들을 마주하면 무의식적인 감정과 인지적 착각, '생각의 덫'에 걸려<br>
         스스로 스트레스를 키우거나 독박을 자처하곤 합니다.<br><br>
-        6가지 리얼 팀플 상황을 통해 내 안의 숨겨진 비합리성 지수를 측정하고,<br>
-        <b>나를 꼭 닮은 손그림 일러스트 캐릭터와 최고의 팀플 파트너</b>를 다이어리에서 확인해 보세요!
+        6가지 리얼 팀플 상황을 통해 내 안의 숨겨진 비합리성 지수를 정교하게 측정하고,<br>
+        <b>나를 꼭 닮은 조별과제 동물 캐릭터 유형과 최고의 팀플 파트너</b>를 매칭해 보세요.
         </p>
     </div>
     """, unsafe_allow_html=True)
     
-    if st.button("👉 나의 팀플 성향 노트 열기 (Start)", use_container_width=True):
+    if st.button("👉 나의 팀플 성향 진단 시작하기", use_container_width=True):
         st.session_state.step = 1
         st.rerun()
 
@@ -253,10 +244,10 @@ elif 1 <= st.session_state.step <= 6:
     q_data = questions[current_idx]
     
     st.progress(st.session_state.step / 6)
-    st.caption(f"✏️ 다이어리에 답변 적는 중: {st.session_state.step} / 6 문항 완료")
+    st.caption(f"진단 문항 진행 중: {st.session_state.step} / 6 완료")
     
     st.markdown(f"""
-    <div class='card-container' style='background-color: #FDFEFE;'>
+    <div class='card-container'>
         <div class='q-badge'>{q_data['badge']}</div>
         <div class='q-text'>{q_data['text']}</div>
     </div>
@@ -265,7 +256,7 @@ elif 1 <= st.session_state.step <= 6:
     user_choice = st.radio("보기 중 하나를 선택하세요:", q_data['options'], index=0, label_visibility="collapsed")
     
     st.write("")
-    if st.button("답변 완료하고 다음 장으로 ➡️", use_container_width=True):
+    if st.button("답변 선택 완료 ➡️", use_container_width=True):
         st.session_state.user_selections[q_data['id']] = user_choice
         st.session_state.step += 1
         st.rerun()
@@ -302,31 +293,31 @@ elif st.session_state.step == 7:
         scores["위험추구(전망이론)"] = 100; bias_count += 1
     else: scores["위험회피(전망이론)"] = 20
 
-    # 차트 컬러 테마도 파스텔톤 노랑/주황에 어울리게 조정
+    # 차트 테마도 파스텔 연보라와 하늘색에 매치되도록 세련되게 변경
     df_result = pd.DataFrame(dict(r=list(scores.values()), theta=list(scores.keys())))
     fig = px.line_polar(df_result, r='r', theta='theta', line_close=True, range_r=[0,100])
-    fig.update_traces(fill='toself', fillcolor='rgba(245, 176, 65, 0.25)', line_color='#F5B041', line_width=4)
-    fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100], gridcolor="#F2F3F4"), bgcolor="white"), showlegend=False)
+    fig.update_traces(fill='toself', fillcolor='rgba(187, 143, 206, 0.2)', line_color='#BB8FCE', line_width=3)
+    fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100], gridcolor="#EAEDED"), bgcolor="white"), showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
     
     final_avg = sum(scores.values()) / 6
-    st.markdown(f"<h2 style='text-align:center; margin-bottom: 30px; font-family:\"Gamja Flower\", cursive; color:#E67E22; font-size:2.5rem;'>나의 팀플 착각 지수: {final_avg:.0f}점</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align:center; margin-bottom: 30px; color:#6C3483; font-weight:bold;'>나의 팀플 착각 지수: {final_avg:.0f}점</h2>", unsafe_allow_html=True)
     
     st.markdown("---")
     st.markdown("### 🏹 나의 조별과제 행동 유형 결과")
     
-    # 🦫 손그림 일러스트 스티커 스타일의 결과 출력
+    # 캐릭터 출력 파트 (연보라 및 하늘 테두리로 시각 안정감 확보)
     if bias_count <= 1:
         st.markdown("""
-        <div class='type-container' style='border: 3px solid #AED6F1; box-shadow: 5px 5px 0px #AED6F1;'>
+        <div class='type-container' style='border-color: #AED6F1;'>
             <div class='character-avatar'>🦅</div>
             <h4>유형 1: 칼같고 이성적인 팀플 매크로, '팩트 독수리'</h4>
             <p><b>팀플 성향:</b> 감정이나 미련에 휘둘리지 않고 철저히 효율과 데이터로만 움직입니다. 조원들이 헛소리를 하거나 잠수를 타면 상처받지 않고 "이름 뺍니다"라며 칼같이 대처하는 냉철한 영웅입니다.</p>
             <p><b>🧩 추천 역할:</b> <b>[자료조사 총괄 및 데이터 팩트 체커]</b><br>엉터리 정보를 귀신같이 가려내고 논리적 결함을 교정하는 최종 검수 역할에 최적화되어 있습니다.</p>
             <p><b>⚠️ 타인이 나를 볼 때 주의할 점:</b> 조원들에게 가끔 '피도 눈물도 없는 인공지능 로봇' 같다는 인상을 주어 묘한 거리감을 유발할 수 있습니다. 피치 못할 사정이 생긴 조원에게 약간의 이모지와 따뜻한 말투를 건네면 팀 분위기가 훨씬 살아납니다.</p>
             <hr style='border: 1px dashed #AED6F1; margin: 15px 0;'>
-            <p style='font-size: 1.15rem !important; color: #2E4053;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
-            <p style='font-size: 1.05rem !important; margin-left: 10px;'>
+            <p style='font-size: 1.05rem !important; color: #2C3E50; font-weight: bold;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
+            <p style='font-size: 1rem !important; margin-left: 10px;'>
             • <b>🦫 실무 비버:</b> 당신의 차가운 뼈대에 살을 붙여줄 최고의 메이커! 당신이 정교하게 발굴한 팩트와 가이드라인을 토대로 군말 없이 완벽한 고퀄리티 PPT를 찍어내 줄 고마운 존재입니다.<br>
             • <b>🐰 불안 보스 토끼:</b> 당신에게 부족한 '감성과 감정 케어'의 마술사! 딱딱한 팀 분위기를 유연하게 풀어주고, 대중의 마음을 흔드는 감성적 발표로 당신의 논리를 200% 빛내줍니다.
             </p>
@@ -334,15 +325,15 @@ elif st.session_state.step == 7:
         """, unsafe_allow_html=True)
     elif 2 <= bias_count <= 3:
         st.markdown("""
-        <div class='type-container' style='border: 3px solid #F9E79F; box-shadow: 5px 5px 0px #F9E79F;'>
+        <div class='type-container' style='border-color: #F9E79F;'>
             <div class='character-avatar'>🦫</div>
             <h4>유형 2: 묵묵히 제 몫을 다하는 평화주의자, '실무 비버'</h4>
             <p><b>팀플 성향:</b> 대다수 선량한 대학생들이 속하는 든든한 황금 밸런스 유형입니다! 가끔 밤샘 자료가 아깝다며 미련을 두거나 단톡방 침묵에 흠칫하기도 하지만, 이내 멘탈을 잡고 현실적인 대안을 묵묵히 빌딩해 나갑니다.</p>
             <p><b>🧩 추천 역할:</b> <b>[자료 편집 및 PPT 실무 제작자]</b><br>상식적이고 조화로운 시선을 가졌기 때문에 대립하는 의견을 융합해 실질적인 결과물로 시각화하는 데 도사입니다.</p>
             <p><b>⚠️ 타인이 나를 볼 때 주의할 점:</b> 무난하고 착한 성격 때문에 무임승차 빌런들이 은근슬쩍 숟가락을 얹으려 표적으로 삼기 쉽습니다. 단호한 리더의 의견에 무조건 끌려다니기만 하면 독박을 쓸 수 있으니 본인의 핵심 주장은 명확히 어필하세요.</p>
             <hr style='border: 1px dashed #F9E79F; margin: 15px 0;'>
-            <p style='font-size: 1.15rem !important; color: #2E4053;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
-            <p style='font-size: 1.05rem !important; margin-left: 10px;'>
+            <p style='font-size: 1.05rem !important; color: #2C3E50; font-weight: bold;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
+            <p style='font-size: 1rem !important; margin-left: 10px;'>
             • <b>🦅 팩트 독수리:</b> 당신의 등 뒤를 지켜줄 든든한 보디가드! 당신이 정 때문에 빌런들에게 거절하지 못하고 쩔쩔매고 있을 때, 앞에서 칼같이 무임승차를 쳐내고 교통정리를 해줍니다.<br>
             • <b>🦖 폭주 공룡:</b> 최고의 시동 모터! 당신이 방향성을 고민하며 주저하고 있을 때, "가자!"를 외치며 폭발적인 추진력과 기발한 아이디어로 판을 깔아주어 작업을 빠르게 시작하게 만듭니다.
             </p>
@@ -350,15 +341,15 @@ elif st.session_state.step == 7:
         """, unsafe_allow_html=True)
     elif 4 <= bias_count <= 5:
         st.markdown("""
-        <div class='type-container' style='border: 3px solid #FADBD8; box-shadow: 5px 5px 0px #FADBD8;'>
+        <div class='type-container' style='border-color: #D2B4DE;'>
             <div class='character-avatar'>🐰</div>
             <h4>유형 3: 눈치 보며 속앓이하는 감성 요정, '불안 보스 토끼'</h4>
             <p><b>팀플 성향:</b> 유리 같은 투명 멘탈과 따뜻한 정을 가졌습니다. 단톡방이 조용하면 '나 때문에 화났나?' 하고 혼자 소설을 쓰며, 교수의 날 선 피드백 한마디에 하루 종일 당도가 떨어집니다. 조원들의 고생에 감정이입을 너무 많이 합니다.</p>
             <p><b>🧩 추천 역할:</b> <b>[청중의 마음을 훔치는 발표자], [팀 분위기 메이커]</b><br>공감 능력과 표현력이 뛰어나 청중을 설득하는 스토리텔링 발표나, 가라앉은 조원들의 사기를 북돋는 정신적 지주 역할에 강합니다.</p>
             <p><b>⚠️ 타인이 나를 볼 때 주의할 점:</b> '정이 많고 부드러운 사람'이라 다들 좋아하지만, 빌런 조원들의 불쌍한 척 핑계에 마음이 약해져 무임승차를 눈감아주다 결국 혼자 우는 비극의 주인공이 되기 쉽습니다. 팀플은 공과 사를 나누어야 본인의 정신건강을 지킵니다.</p>
-            <hr style='border: 1px dashed #FADBD8; margin: 15px 0;'>
-            <p style='font-size: 1.15rem !important; color: #2E4053;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
-            <p style='font-size: 1.05rem !important; margin-left: 10px;'>
+            <hr style='border: 1px dashed #D2B4DE; margin: 15px 0;'>
+            <p style='font-size: 1.05rem !important; color: #2C3E50; font-weight: bold;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
+            <p style='font-size: 1rem !important; margin-left: 10px;'>
             • <b>🦅 팩트 독수리:</b> 유리 멘탈인 당신을 위한 완벽한 방호벽! 당신이 "저기.. 혹시.." 하면서 눈치 볼 때, "안 됩니다." 한마디로 가스라이팅과 빌런들의 공격을 차단해 주는 든든한 멘탈 파수꾼입니다.<br>
             • <b>🦫 실무 비버:</b> 든든하고 포근한 마음의 안식처! 당신이 쓸데없는 걱정으로 소설을 쓰며 불안해할 때, 묵묵히 서포트하며 "그거 아니야, 우리 잘하고 있어"라고 이성적인 안도감을 선사합니다.
             </p>
@@ -366,15 +357,15 @@ elif st.session_state.step == 7:
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div class='type-container' style='border: 3px solid #EDBB99; box-shadow: 5px 5px 0px #EDBB99;'>
+        <div class='type-container' style='border-color: #BB8FCE;'>
             <div class='character-avatar'>🦖</div>
             <h4>유형 4: 다 비켜! 내가 혼자 다 한다, '폭주 공룡(리더렉스)'</h4>
             <p><b>팀플 성향:</b> "답답해서 못 살겠다! 조원 다 잠수 타도 내 솜씨로 캐리해서 A+ 받으면 그만!"을 외치는 마이웨이 초긍정 낙관 몬스터입니다. 직관과 근거 없는 자신감을 사랑하며 위기 속에서 아드레날린을 느낍니다.</p>
             <p><b>🧩 추천 역할:</b> <b>[전쟁터를 이끄는 조장(PM)], [아이디어 파괴자]</b><br>아무도 리더를 안 하려는 헬(Hell) 상황에서 압도적인 추진력으로 판을 짜고, 멱살 잡고 하드캐리해 프로젝트를 기한 내 골인시키는 견인차입니다.</p>
             <p><b>⚠️ 타인이 나를 볼 때 주의할 점:</b> 추진력은 시원시원해 보이지만, 팀원들 눈에는 '조원들의 피드백을 무시하고 혼자 고집 부리며 폭주하는 독재자'로 보일 위험이 큽니다. 잘못된 방향인데도 미련 때문에 밀어붙이다가 다 같이 침몰할 수 있으니 늘 나침반(팀원 의견)을 확인하세요.</p>
-            <hr style='border: 1px dashed #EDBB99; margin: 15px 0;'>
-            <p style='font-size: 1.15rem !important; color: #2E4053;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
-            <p style='font-size: 1.05rem !important; margin-left: 10px;'>
+            <hr style='border: 1px dashed #BB8FCE; margin: 15px 0;'>
+            <p style='font-size: 1.05rem !important; color: #2C3E50; font-weight: bold;'><b>🤝 같이 조 짜면 대박 나는 환상의 파트너:</b></p>
+            <p style='font-size: 1rem !important; margin-left: 10px;'>
             • <b>🦫 실무 비버:</b> 폭주하는 공룡을 제어할 유일한 브레이크이자 살림꾼! 당신이 거친 아이디어를 마구 던지면, 현실적으로 실현 가능한 영역만 추려내 정돈된 고퀄리티 작업물로 다듬어 줍니다.<br>
             • <b>🐰 불안 보스 토끼:</b> 당신의 거친 독주에 상처받은 조원들을 달래줄 힐러! 당신이 앞만 보고 달리느라 놓친 팀원들의 스케줄과 마음을 섬세하게 케어해 조가 공중분해되는 것을 막아줍니다.
             </p>
@@ -406,7 +397,7 @@ elif st.session_state.step == 7:
     """, unsafe_allow_html=True)
 
     st.write("")
-    if st.button("🔄 새로운 팀 프로젝트 조 짜러 가기 (다시하기)", use_container_width=True):
+    if st.button("🔄 새로운 프로젝트 조 짜러 가기 (다시하기)", use_container_width=True):
         st.session_state.step = 0
         st.session_state.user_selections = {}
         st.rerun()
