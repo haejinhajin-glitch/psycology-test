@@ -156,7 +156,7 @@ elif st.session_state.step == 6:
     else: scores["매몰비용 오류"] = 20
         
     # Q2. 결합 오류
-    if st.session_state.user_selections.get("결합 오류") == "지수는 대기업 회사원이면서 사회적 기업의 후원자이다.":
+    if st.session_state.user_selections.get("결합 오류") == "지수는 평범한 대기업 회사원이면서 동시에 '사회적 기업의 정기 후원자'이다.":
         scores["결합 오류"] = 100
     else: scores["결합 오류"] = 20
         
@@ -175,13 +175,13 @@ elif st.session_state.step == 6:
         scores["낙관성 편향"] = 100
     else: scores["낙관성 편향"] = 20
 
-    # 5. 오각형 방사형 차트 데이터 전처리 및 생성 (Plotly)
+    # 5. 오각형 방사형 차트 데이터 전처리 및 생성 (Plotly) - fill='toself'로 에러 수정 완료
     df_result = pd.DataFrame(dict(
         r=list(scores.values()),
         theta=list(scores.keys())
     ))
     fig = px.line_polar(df_result, r='r', theta='theta', line_close=True, range_r=[0,100])
-    fig.update_traces(fill='subsection', fillcolor='rgba(74, 144, 226, 0.25)', line_color='#3182CE', line_width=3)
+    fig.update_traces(fill='toself', fillcolor='rgba(74, 144, 226, 0.25)', line_color='#3182CE', line_width=3)
     fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100])), showlegend=False)
     
     # 화면에 그래프 렌더링
