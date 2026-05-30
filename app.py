@@ -1,29 +1,29 @@
 import streamlit as st
-import plotly.express as px
 import pandas as pd
 import time
+import plotly.express as px
 
 # 1. 페이지 설정
 st.set_page_config(page_title="조별과제 잔혹사: 나의 팀플 성향 진단", page_icon="📝", layout="centered")
 
-# 2. CSS 스타일 (기존과 동일)
+# 2. 세련된 스타일을 위한 CSS (폰트 및 레이아웃 개선)
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
-    * { font-family: 'Gowun Dodum', sans-serif !important; }
-    .stApp { background-color: #F4F7F9; }
-    .card-container { background-color: #ffffff; padding: 35px; border-radius: 20px; box-shadow: 0px 8px 16px rgba(187, 143, 206, 0.15); margin-bottom: 30px; border: 1px solid #E8DAEF; }
-    .main-title { font-size: 2.1rem; font-weight: bold; text-align: center; color: #6C3483; line-height: 1.4; margin-bottom: 12px; }
-    .sub-title { font-size: 1.15rem; text-align: center; color: #7FB3D5; margin-bottom: 35px; font-weight: 500; }
-    .q-badge { background-color: #FEF9E7; color: #7D6608; padding: 6px 16px; border-radius: 30px; font-weight: bold; font-size: 1rem; display: inline-block; margin-bottom: 15px; border: 1px solid #F9E79F; }
-    .q-text { font-size: 1.3rem; font-weight: bold; color: #2C3E50; line-height: 1.6; margin-bottom: 20px; }
-    .type-container { background-color: #ffffff; padding: 30px; border-radius: 20px; border: 1px solid #BB8FCE; margin-bottom: 25px; }
-    .character-avatar { font-size: 3rem; text-align: center; margin: 10px auto; width: 80px; height: 80px; background-color: #EBF5FB; border-radius: 50%; line-height: 80px; }
-    .stButton>button { border-radius: 12px !important; font-size: 1.1rem !important; background-color: #BB8FCE !important; color: white !important; }
+    @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&display=swap');
+    
+    .stApp { background: linear-gradient(135deg, #fdfbfb 0%, #f7f3f9 100%); }
+    h1 { font-family: 'Black Han Sans', sans-serif !important; color: #4A235A; text-align: center; margin-bottom: 20px; }
+    h3 { font-family: 'Black Han Sans', sans-serif !important; color: #6C3483 !important; }
+    .intro-text { font-family: 'Gowun Dodum', sans-serif; text-align: center; color: #5D6D7E; font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; }
+    .q-card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .q-badge { background-color: #FEF9E7; color: #7D6608; padding: 6px 16px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; display: inline-block; margin-bottom: 10px; border: 1px solid #F9E79F; }
+    .type-container { background-color: #ffffff; padding: 30px; border-radius: 20px; border: 2px solid #BB8FCE; margin-bottom: 25px; box-shadow: 0px 4px 12px rgba(187, 143, 206, 0.1); }
+    .solution-box { background-color: #ffffff; padding: 24px; border-radius: 16px; margin-bottom: 18px; border-left: 6px solid #BB8FCE; border: 1px solid #EAECEE; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
+    .stButton>button { width: 100%; border-radius: 50px !important; height: 3rem !important; font-weight: bold; background: #6C3483 !important; color: white !important; border: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. 질문 데이터 구조화 (점수 가중치 포함)
+# 3. 질문 및 점수 데이터
 questions = [
     {
         "id": "낙관성 편향", "badge": "📢 마감 직전의 빌런 발생",
@@ -57,38 +57,61 @@ questions = [
     }
 ]
 
+# 4. 앱 로직
 if 'step' not in st.session_state: st.session_state.step = 0
-if 'user_selections' not in st.session_state: st.session_state.user_selections = {}
+if 'results' not in st.session_state: st.session_state.results = {}
+if 'scores' not in st.session_state: st.session_state.scores = {}
 
-# 로직 실행부
 if st.session_state.step == 0:
-    st.markdown("<div class='main-title'>👥 조별과제 잔혹사<br>나의 팀플 성향 & 인지 오류 진단</div>", unsafe_allow_html=True)
-    if st.button("👉 진단 시작하기", use_container_width=True):
+    st.markdown("<h1>👥 조별과제 잔혹사</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='intro-text'>현실적인 팀플 돌발 상황들로 정밀하게 파악해보는<br>나의 인지 편향 지수 테스트</p>", unsafe_allow_html=True)
+    if st.button("👉 나의 팀플 성향 진단 시작하기"):
         st.session_state.step = 1; st.rerun()
 
 elif 1 <= st.session_state.step <= 6:
     q = questions[st.session_state.step - 1]
     st.progress(st.session_state.step / 6)
-    st.markdown(f"<div class='card-container'><div class='q-badge'>{q['badge']}</div><div class='q-text'>{q['text']}</div></div>", unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class='q-card'>
+            <div class='q-badge'>{q['badge']}</div>
+            <div style='font-size: 1.2rem; font-weight: bold;'>{q['text']}</div>
+        </div>
+    """, unsafe_allow_html=True)
     
     choice = st.radio("선택지:", list(q['options'].keys()), label_visibility="collapsed")
-    if st.button("다음 ➡️", use_container_width=True):
-        st.session_state.user_selections[q['id']] = q['options'][choice]
+    if st.button("답변 선택 완료 ➡️"):
+        st.session_state.scores[q['id']] = q['options'][choice]
         st.session_state.step += 1; st.rerun()
 
 elif st.session_state.step == 7:
-    with st.spinner('당신의 팀플 성향을 분석 중입니다...'):
+    with st.spinner('당신의 팀플 DNA 분석 중...'):
         time.sleep(1.5)
         st.balloons()
-        
-    scores = st.session_state.user_selections
-    df = pd.DataFrame({'bias': list(scores.keys()), 'score': list(scores.values())})
-    fig = px.line_polar(df, r='score', theta='bias', line_close=True, range_r=[0, 100])
-    fig.update_traces(fill='toself', fillcolor='rgba(187, 143, 206, 0.2)')
+    
+    st.markdown("<h1>📊 팀플 인지오류 진단 결과</h1>", unsafe_allow_html=True)
+    bias_count = sum(1 for s in st.session_state.scores.values() if s == 100)
+    
+    # 레이더 차트
+    df = pd.DataFrame({'측정 항목': st.session_state.scores.keys(), '점수': st.session_state.scores.values()})
+    fig = px.line_polar(df, r='점수', theta='측정 항목', line_close=True, range_r=[0,100])
+    fig.update_traces(fill='toself', fillcolor='rgba(187, 143, 206, 0.2)', line_color='#BB8FCE')
     st.plotly_chart(fig, use_container_width=True)
+
+    # 유형별 상세 결과 (내용 유지)
+    if bias_count <= 1:
+        st.markdown("<div class='type-container'><h4>🦅 유형 1: 팩트 독수리</h4><p>감정에 휘둘리지 않고 철저히 효율과 데이터로 움직입니다. 조원들이 잠수를 타면 상처받지 않고 칼같이 대처하는 냉철한 영웅입니다.</p></div>", unsafe_allow_html=True)
+    elif 2 <= bias_count <= 3:
+        st.markdown("<div class='type-container'><h4>🦫 유형 2: 실무 비버</h4><p>묵묵히 제 몫을 다하는 평화주의자입니다. 가끔 미련을 두기도 하지만, 상황에 맞춰 실질적인 결과물을 빌딩해 나갑니다.</p></div>", unsafe_allow_html=True)
+    elif 4 <= bias_count <= 5:
+        st.markdown("<div class='type-container'><h4>🐰 유형 3: 불안 보스 토끼</h4><p>유리 멘탈과 따뜻한 정을 가진 감성 요정입니다. 조원들의 상황에 감정이입을 너무 많이 하여 속앓이를 자주 합니다.</p></div>", unsafe_allow_html=True)
+    else:
+        st.markdown("<div class='type-container'><h4>🦖 유형 4: 폭주 공룡</h4><p>답답해서 못 살겠다! 혼자서라도 캐리해서 A+를 받겠다는 마이웨이 초긍정 낙관 몬스터입니다.</p></div>", unsafe_allow_html=True)
+
+    # 솔루션 가이드 유지
+    st.markdown("### 🛠️ 조별과제 '생각의 덫' 탈출 가이드")
+    st.markdown("<div class='solution-box'><b>1. 낙관성 편향:</b> 나 혼자 밤새우면 끝난다는 생각을 버리고 최악의 시나리오를 대비하세요.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='solution-box'><b>2. 매몰비용 오류:</b> 과감하게 버려야 전체 학점을 살릴 수 있습니다.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='solution-box'><b>3. 가용성 편향:</b> 단톡방 침묵으로 혼자 소설 쓰지 마세요.</div>", unsafe_allow_html=True)
     
-    bias_count = sum(1 for s in scores.values() if s == 100)
-    st.markdown(f"### 🏹 당신의 팀플 유형: {'유형 1~4 상세 로직 생략'}")
-    
-    if st.button("🔄 다시 하기"):
-        st.session_state.step = 0; st.session_state.user_selections = {}; st.rerun()
+    if st.button("🔄 테스트 다시 하기"):
+        st.session_state.step = 0; st.session_state.scores = {}; st.rerun()
