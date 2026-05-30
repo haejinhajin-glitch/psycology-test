@@ -176,4 +176,3 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ... (이하 나머지 파이썬 로직 코드는 동일하게 유지)
